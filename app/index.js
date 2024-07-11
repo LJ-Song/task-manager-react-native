@@ -7,6 +7,7 @@ import {
     TouchableOpacity, 
     FlatList, 
     StyleSheet, 
+    Alert
 } from "react-native"; 
   
 const App = () => { 
@@ -58,6 +59,24 @@ const App = () => {
         setTitles(updatedTitles);
         setDescriptions(updatedDescriptions); 
     }; 
+    
+    const handleDetail = (index) => { 
+        const taskToDisplay = titles[index]; 
+        const descriptionToDisplay = descriptions[index]; 
+        Alert.alert(
+            taskToDisplay, 
+            descriptionToDisplay, 
+            [
+                {
+                    text:"Back", 
+                    style: 'cancel',
+                },
+            ], 
+            {
+                cancelable: true
+            });
+    }; 
+
   
     const renderItem = ({ item, index }) => ( 
         <View style={styles.title}> 
@@ -66,7 +85,7 @@ const App = () => {
             <View 
                 style={styles.taskButtons}> 
                 <TouchableOpacity 
-                    onPress={() => {}}> 
+                    onPress={() => handleDetail(index)}> 
                     <Text 
                         style={styles.detailButton}>Details</Text> 
                 </TouchableOpacity> 
