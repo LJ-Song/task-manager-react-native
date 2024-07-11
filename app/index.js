@@ -19,8 +19,6 @@ const App = () => {
     const [description, setDescription] = useState(""); 
     const [descriptions, setDescriptions] = useState([]); 
 
-
-
     const router = useRouter();
   
     const handleAddTask = () => { 
@@ -53,12 +51,29 @@ const App = () => {
     }; 
   
     const handleDeleteTask = (index) => { 
-        const updatedTitles = [...titles]; 
-        updatedTitles.splice(index, 1); 
-        const updatedDescriptions = [...descriptions]; 
-        updatedDescriptions.splice(index, 1); 
-        setTitles(updatedTitles);
-        setDescriptions(updatedDescriptions); 
+        if ((title) || (description)){
+            Alert.alert(
+                "Cannot Delete", 
+                "Can't delete while editing", 
+                [
+                    {
+                        text:"Back", 
+                        style: 'cancel',
+                    },
+                ], 
+                {
+                    cancelable: true
+                });
+        }
+        else {
+            const updatedTitles = [...titles]; 
+            updatedTitles.splice(index, 1); 
+            const updatedDescriptions = [...descriptions]; 
+            updatedDescriptions.splice(index, 1); 
+            setTitles(updatedTitles);
+            setDescriptions(updatedDescriptions); 
+        }
+        
     }; 
     
     const handleDetail = (index) => { 
