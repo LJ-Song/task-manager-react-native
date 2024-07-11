@@ -7,8 +7,9 @@ import {
     TouchableOpacity, 
     FlatList, 
     StyleSheet, 
-    Alert
+    Alert, 
 } from "react-native"; 
+import BouncyCheckbox from "react-native-bouncy-checkbox";
   
 const App = () => { 
     const [title, setTitle] = useState(""); 
@@ -79,7 +80,13 @@ const App = () => {
 
   
     const renderItem = ({ item, index }) => ( 
-        <View style={styles.title}> 
+        
+        <View style={styles.title} borderBottomWidth='thick'> 
+        <View style={styles.checkbox}>
+        <BouncyCheckbox 
+            onPress={(isChecked) => {console.log(isChecked)}}
+        />
+        </View>
             <Text 
                 style={styles.itemList}>{item}</Text> 
             <View 
@@ -153,6 +160,7 @@ const styles = StyleSheet.create({
         fontSize: 24, 
         fontWeight: "bold", 
         marginBottom: 20, 
+        flexDirection: 'column'
     }, 
     heading: { 
         fontSize: 30, 
@@ -180,8 +188,7 @@ const styles = StyleSheet.create({
         textAlign: "center", 
         fontSize: 18, 
     }, 
-    title: { 
-        flexDirection: "row", 
+    title: {  
         justifyContent: "space-between", 
         alignItems: "center", 
         marginBottom: 15, 
@@ -210,6 +217,9 @@ const styles = StyleSheet.create({
         fontWeight: "bold", 
         fontSize: 12, 
     }, 
+    checkbox: {
+        maginRight:1,
+    },
 }); 
   
 export default App;
