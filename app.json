@@ -3,6 +3,7 @@
     "name": "task-manager-react-native",
     "slug": "task-manager-react-native",
     "version": "1.0.0",
+    "scheme": "task-manager",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -22,6 +23,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
+  
 }
