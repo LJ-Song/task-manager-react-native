@@ -10,45 +10,66 @@ import {
 } from "react-native"; 
   
 const App = () => { 
-    const [task, setTask] = useState(""); 
-    const [tasks, setTasks] = useState([]); 
+    const [title, setTitle] = useState(""); 
+    const [titles, setTitles] = useState([]); 
     const [editIndex, setEditIndex] = useState(-1); 
+
+    const [description, setDescription] = useState(""); 
+    const [descriptions, setDescriptions] = useState([]); 
+
+
+
     const router = useRouter();
   
     const handleAddTask = () => { 
-        if (task) { 
+        if ((title) && (description)) { 
             if (editIndex !== -1) { 
-                // Edit existing task 
-                const updatedTasks = [...tasks]; 
-                updatedTasks[editIndex] = task; 
-                setTasks(updatedTasks); 
+                // Edit existing title 
+                const updatedTitles = [...titles]; 
+                updatedTitles[editIndex] = title; 
+                setTitles(updatedTitles); 
+                const updatedDescriptions = [...descriptions]; 
+                updatedDescriptions[editIndex] = description; 
+                setDescriptions(updatedDescriptions); 
                 setEditIndex(-1); 
             } else { 
-                // Add new task 
-                setTasks([...tasks, task]); 
+                // Add new title 
+                setTitles([...titles, title]); 
+                setDescriptions([...descriptions, description]); 
             } 
-            setTask(""); 
+            setTitle(""); 
+            setDescription("")
         } 
     }; 
   
     const handleEditTask = (index) => { 
-        const taskToEdit = tasks[index]; 
-        setTask(taskToEdit); 
+        const taskToEdit = titles[index]; 
+        setTitle(taskToEdit); 
+        const descriptionToEdit = descriptions[index]; 
+        setDescription(descriptionToEdit); 
         setEditIndex(index); 
     }; 
   
     const handleDeleteTask = (index) => { 
-        const updatedTasks = [...tasks]; 
-        updatedTasks.splice(index, 1); 
-        setTasks(updatedTasks); 
+        const updatedTitles = [...titles]; 
+        updatedTitles.splice(index, 1); 
+        const updatedDescriptions = [...descriptions]; 
+        updatedDescriptions.splice(index, 1); 
+        setTitles(updatedTitles);
+        setDescriptions(updatedDescriptions); 
     }; 
   
     const renderItem = ({ item, index }) => ( 
-        <View style={styles.task}> 
+        <View style={styles.title}> 
             <Text 
                 style={styles.itemList}>{item}</Text> 
             <View 
                 style={styles.taskButtons}> 
+                <TouchableOpacity 
+                    onPress={() => {}}> 
+                    <Text 
+                        style={styles.detailButton}>Details</Text> 
+                </TouchableOpacity> 
                 <TouchableOpacity 
                     onPress={() => handleEditTask(index)}> 
                     <Text 
@@ -71,13 +92,13 @@ const App = () => {
                 style={styles.input} 
                 placeholder="Title"
                 value={title} 
-                onChangeText={(text) => setTask(text)} 
+                onChangeText={(text) => setTitle(text)} 
             /> 
             <TextInput 
                 style={styles.input} 
                 placeholder="Description"
                 value={description} 
-                onChangeText={(text) => setTask(text)} 
+                onChangeText={(text) => setDescription(text)} 
             /> 
             <TouchableOpacity 
                 style={styles.addButton} 
@@ -95,7 +116,7 @@ const App = () => {
                 </Text> 
             </TouchableOpacity> 
             <FlatList 
-                data={tasks} 
+                data={titles} 
                 renderItem={renderItem} 
                 keyExtractor={(item, index) => index.toString()} 
             /> 
@@ -140,7 +161,7 @@ const styles = StyleSheet.create({
         textAlign: "center", 
         fontSize: 18, 
     }, 
-    task: { 
+    title: { 
         flexDirection: "row", 
         justifyContent: "space-between", 
         alignItems: "center", 
@@ -155,14 +176,20 @@ const styles = StyleSheet.create({
     }, 
     editButton: { 
         marginRight: 10, 
+        marginLeft: 10, 
         color: "green", 
         fontWeight: "bold", 
-        fontSize: 18, 
+        fontSize: 12, 
     }, 
     deleteButton: { 
         color: "red", 
         fontWeight: "bold", 
-        fontSize: 18, 
+        fontSize: 12, 
+    }, 
+    detailButton: { 
+        color: "black", 
+        fontWeight: "bold", 
+        fontSize: 12, 
     }, 
 }); 
   
