@@ -10,7 +10,7 @@ import {
     Alert, 
 } from "react-native"; 
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { doc, setDoc } from "firebase/firestore"; 
+import { doc, setDoc, collection, addDoc, updateDoc, arrayUnion } from "firebase/firestore"; 
 import { FIRESTORE_DB, FIREBASE_AUTH } from "../../config/firebase";
 
 import styles  from '../../styles/task.style'
@@ -27,11 +27,42 @@ const TaskPage = ( {navigation} ) => {
 
     const router = useRouter();
 
+    const addTaskToDB = async ({title, description, uid}) => {
+        try {
+            const taskRef = await addDoc(collection(FIRESTORE_DB, 'Tasks'), {
+                uid: uid,
+                title: title, 
+                description: description, 
+                completed: false,
+                time_completed: null
+            });
+            const userRef = doc(FIRESTORE_DB, "Users", user.uid);
+            
+            // Atomically add a new region to the "regions" array field.
+            await updateDoc(userRef, {
+                tasks: arrayUnion(taskRef.id)
+            });
+            setTitle(""); 
+            setDescription("")
+            console.log('Document written with ID: ', taskRef.id);
+        } catch (e) {
+            console.error('Error adding document: ', e);
+        }
+    }
+
     const handleLeaderboard = () => {
         navigation.navigate('Leaderboard');
     }
   
     const handleAddTask = () => { 
+        if (! (title)) {
+            alert('Please fill in a title');
+            return;
+        }
+        if (! (description)) {
+            alert('Please fill in a description');
+            return;
+        }
         if ((title) && (description)) { 
             if (editIndex !== -1) { 
                 // Edit existing title 
@@ -47,15 +78,13 @@ const TaskPage = ( {navigation} ) => {
                 try {
                     if (user != null) {
                         const uid = user.uid;
-                        const email = user.email;
-
+                        addTaskToDB({title, description, uid});
                     }
                 } catch (e) {
-
+                    console.log(e);
                 }
-
-                setTitles([...titles, title]); 
-                setDescriptions([...descriptions, description]); 
+                // setTitles([...titles, title]); 
+                // setDescriptions([...descriptions, description]); 
             } 
             setTitle(""); 
             setDescription("")
@@ -129,9 +158,9 @@ const TaskPage = ( {navigation} ) => {
         <BouncyCheckbox 
             onPress={(isChecked) => {}}
         />
+        <Text style={styles.itemList}>{item}</Text> 
         </View>
-            <Text 
-                style={styles.itemList}>{item}</Text> 
+            
             <View 
                 style={styles.taskButtons}> 
                 <TouchableOpacity 
@@ -155,8 +184,8 @@ const TaskPage = ( {navigation} ) => {
   
     return ( 
         <View style={styles.container}> 
-            <Text style={styles.heading}>Welcome, User</Text> 
-            <Text style={styles.headTitle}>Task Manager</Text> 
+            <Text style={styles.heading}>Task Manager</Text> 
+            <Text style={styles.headTitle}>Completed: 0</Text> 
             <TextInput 
                 style={styles.input} 
                 placeholder="Title"

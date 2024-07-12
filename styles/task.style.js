@@ -3,17 +3,17 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({ 
     container: { 
         flex: 1, 
-        padding: 40, 
-        marginTop: 40, 
+        padding: 25, 
+        marginTop: 25, 
     }, 
     headTitle: { 
-        fontSize: 24, 
+        fontSize: 20, 
         fontWeight: "bold", 
         marginBottom: 20, 
         flexDirection: 'column'
     }, 
     heading: { 
-        fontSize: 30, 
+        fontSize: 25, 
         fontWeight: "bold", 
         marginBottom: 7, 
         color: "green", 
@@ -21,14 +21,14 @@ const styles = StyleSheet.create({
     input: { 
         borderWidth: 3, 
         borderColor: "#ccc", 
-        padding: 10, 
+        padding: 8, 
         marginBottom: 10, 
         borderRadius: 10, 
-        fontSize: 18, 
+        fontSize: 15, 
     }, 
     addButton: { 
         backgroundColor: "green", 
-        padding: 10, 
+        padding: 8, 
         borderRadius: 5, 
         marginBottom: 10, 
     }, 
@@ -36,39 +36,44 @@ const styles = StyleSheet.create({
         color: "white", 
         fontWeight: "bold", 
         textAlign: "center", 
-        fontSize: 18, 
+        fontSize: 15, 
     }, 
     title: {  
         justifyContent: "space-between", 
-        alignItems: "center", 
+        alignItems: "left", 
         marginBottom: 15, 
         fontSize: 18, 
     }, 
     itemList: { 
-        fontSize: 19, 
+        fontSize: 18, 
+        padding: 8
     }, 
     taskButtons: { 
-        flexDirection: "row", 
+        flexDirection: "row",
+        alignSelf: 'flex-end'
     }, 
     editButton: { 
-        marginRight: 10, 
-        marginLeft: 10, 
+        marginRight: 15, 
+        marginLeft: 15, 
         color: "green", 
         fontWeight: "bold", 
         fontSize: 12, 
     }, 
     deleteButton: { 
+        marginRight: 15, 
+        marginLeft: 15, 
         color: "red", 
         fontWeight: "bold", 
         fontSize: 12, 
     }, 
     detailButton: { 
+        marginRight: 15, 
         color: "black", 
         fontWeight: "bold", 
         fontSize: 12, 
     }, 
     checkbox: {
-        maginRight:1,
+        flexDirection: "row",
     },
     loginContainer: {
         marginHorizontal: 20, 

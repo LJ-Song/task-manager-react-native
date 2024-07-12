@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Button, TouchableOpacity } from 'react-native';
 
 const data = {
   daily: [
@@ -19,7 +19,7 @@ const data = {
   ],
 };
 
-const Leaderboard = () => {
+const Leaderboard = ({navigation}) => {
   const [filter, setFilter] = useState('daily');
 
   const renderItem = ({ item }) => (
@@ -29,8 +29,20 @@ const Leaderboard = () => {
     </View>
   );
 
+  const handleBackButton = () => {
+    navigation.navigate('TaskPage');
+  }
+
   return (
-    <View style={styles.container}>
+    <View style={styles.leaderboardContainer}>
+      <TouchableOpacity 
+        style={styles.addButton} 
+        // To be implemented
+        onPress={handleBackButton}> 
+        <Text style={styles.addButtonText}> 
+            Back to Task
+        </Text> 
+      </TouchableOpacity> 
       <Text style={styles.title}>Winners</Text>
       <View style={styles.buttonContainer}>
         <Button title="Daily" onPress={() => setFilter('daily')} />
@@ -47,10 +59,11 @@ const Leaderboard = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  leaderboardContainer: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: 20,
+    backgroundColor: '#fff', 
+    padding: 25, 
+    
   },
   title: {
     fontSize: 24,
@@ -77,6 +90,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  addButton: { 
+    backgroundColor: "green", 
+    padding: 10, 
+    borderRadius: 5, 
+    marginBottom: 10, 
+  }, 
+  addButtonText: { 
+    color: "white", 
+    fontWeight: "bold", 
+    textAlign: "left", 
+    fontSize: 18, 
+}, 
 });
 
 export default Leaderboard;
