@@ -11,7 +11,7 @@ import {
     Alert, 
 } from "react-native"; 
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { doc, setDoc, collection, addDoc, deleteDoc, updateDoc, increment, onSnapshot } from "firebase/firestore"; 
+import { doc, serverTimestamp, setDoc, collection, addDoc, deleteDoc, updateDoc, increment, onSnapshot } from "firebase/firestore"; 
 import { FIRESTORE_DB, FIREBASE_AUTH } from "../../config/firebase";
 
 import styles  from '../../styles/task.style'
@@ -158,30 +158,15 @@ const TaskPage = ( {navigation} ) => {
                 });
         }
         else {
-            // const updatedTitles = [...titles]; 
-            // updatedTitles.splice(index, 1); 
-            // const updatedDescriptions = [...descriptions]; 
-            // updatedDescriptions.splice(index, 1); 
-            // setTitles(updatedTitles);
-            // setDescriptions(updatedDescriptions); 
             try {
                 await deleteDoc(doc(FIRESTORE_DB, `Tasks/${taskId}`));
                 await deleteDoc(doc(FIRESTORE_DB, `Users/${user.uid}/tasks/${taskId}`));
             } catch (e) {
                 console.log('Cannot delete' + e);
             }
-            // await deleteDoc(ref);
         }
         
     }; 
-
-    const handleCheckedTask = (index) => { 
-        // TODO: Need to update to completed task. 
-        // If someone changes their mind, they can't reverse it. 
-        const timeoutId = setTimeout(() => {
-                handleDeleteTask(index);
-            }, 1000);
-    }
     
     const handleDetail = (title, description) => { 
         // const taskToDisplay = titles[index]; 
@@ -209,16 +194,27 @@ const TaskPage = ( {navigation} ) => {
                 await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}`), {
                     completed_task_count: increment(1)
                 });
+                await updateDoc(doc(FIRESTORE_DB, `Tasks/${item.id}`), {
+                    completed: !item.completed, 
+                    time_completed: serverTimestamp()
+                });
+                await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}/tasks/${item.id}`), {
+                    completed: !item.completed
+                });
+
             } else {
                 await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}`), {
                     completed_task_count: increment(-1)
                 });
+                await updateDoc(doc(FIRESTORE_DB, `Tasks/${item.id}`), {
+                    completed: !item.completed, 
+                    time_completed: null
+                });
+                await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}/tasks/${item.id}`), {
+                    completed: !item.completed
+                });
             }
-            const ref = await doc(FIRESTORE_DB, `Tasks/${item.id}`);
-            await updateDoc(ref, {completed: !item.completed});
-            await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}/tasks/${item.id}`), {
-                completed: !item.completed
-            });
+            
         };
 
         // const deleteItem = async () => {
