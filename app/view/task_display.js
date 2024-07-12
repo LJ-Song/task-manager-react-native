@@ -1,4 +1,4 @@
-import React, { useState } from "react"; 
+import React, { useState, useEffect } from "react"; 
 import { Stack, useRouter, Redirect } from 'expo-router';
 import { 
     View, 
@@ -10,54 +10,59 @@ import {
     Alert, 
 } from "react-native"; 
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { doc, setDoc, collection, addDoc, updateDoc, arrayUnion } from "firebase/firestore"; 
+import { doc, setDoc, collection, addDoc, deleteDoc, updateDoc, increment, onSnapshot } from "firebase/firestore"; 
 import { FIRESTORE_DB, FIREBASE_AUTH } from "../../config/firebase";
 
 import styles  from '../../styles/task.style'
+import { 
+    addTaskToDB, 
+    readTasksFromDB, 
+    deleteTaskFromDB, 
+    readOneTaskFromDB, 
+    updateTaskFromDB 
+} from '../../utils/firestore_setup'
   
 const TaskPage = ( {navigation} ) => { 
+    const user = FIREBASE_AUTH.currentUser;
     const [title, setTitle] = useState(""); 
-    const [titles, setTitles] = useState([]); 
+    // const [titles, setTitles] = useState([]); 
     const [editIndex, setEditIndex] = useState(-1); 
 
     const [description, setDescription] = useState(""); 
-    const [descriptions, setDescriptions] = useState([]); 
+    // const [descriptions, setDescriptions] = useState([]); 
 
-    const user = FIREBASE_AUTH.currentUser;
+    const [tasks, setTasks] = useState([]);
+    // Real time update to fectch data
+    useEffect(() => {
+        if (user != null) {
+            const tasksRef = collection(doc(FIRESTORE_DB, 'Users', user.uid), "tasks");
+    
+            const subscriber = onSnapshot(tasksRef, {
+            next: (snapshot) => {
+                const tasks = [];
+                snapshot.docs.forEach((doc) => {
+                    tasks.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+    
+                setTasks(tasks);
+            }
+        });
+        // // Unsubscribe from events when no longer in use
+        return () => subscriber();
+        }
+    }, []);
+    
 
     const router = useRouter();
-
-    const addTaskToDB = async ({title, description, uid}) => {
-        try {
-            const taskRef = await addDoc(collection(FIRESTORE_DB, 'Tasks'), {
-                uid: uid,
-                title: title, 
-                description: description, 
-                completed: false,
-                time_completed: null
-            });
-            const userRef = doc(FIRESTORE_DB, "Users", uid, "tasks", taskRef.id);
-            
-            // Atomically add a new region to the "regions" array field.
-            const subtaskRef = await setDoc(userRef, {
-                title: title, 
-                description: description
-            })
-            // await updateDoc(userRef, {
-            //     tasks: arrayUnion(taskRef.id)
-            // });
-            setTitle(""); 
-            setDescription("")
-            console.log('Document written with ID: ', taskRef.id);
-        } catch (e) {
-            console.error('Error adding document: ', e);
-        }
-    }
-
+    
+    // Redirect to leaderboard
     const handleLeaderboard = () => {
         navigation.navigate('Leaderboard');
     }
-  
+    // Handles add task related operation. 
     const handleAddTask = () => { 
         if (! (title)) {
             alert('Please fill in a title');
@@ -83,6 +88,8 @@ const TaskPage = ( {navigation} ) => {
                     if (user != null) {
                         const uid = user.uid;
                         addTaskToDB({title, description, uid});
+                        setTitle(""); 
+                        setDescription("")
                     }
                 } catch (e) {
                     console.log(e);
@@ -95,15 +102,17 @@ const TaskPage = ( {navigation} ) => {
         } 
     }; 
   
-    const handleEditTask = (index) => { 
-        const taskToEdit = titles[index]; 
-        setTitle(taskToEdit); 
-        const descriptionToEdit = descriptions[index]; 
-        setDescription(descriptionToEdit); 
-        setEditIndex(index); 
+    const handleEditTask = (ref) => { 
+        setTitle(ref.title);
+        setDescription(ref.description);
+        // const taskToEdit = titles[index]; 
+        // setTitle(taskToEdit); 
+        // const descriptionToEdit = descriptions[index]; 
+        // setDescription(descriptionToEdit); 
+        // setEditIndex(index); 
     }; 
   
-    const handleDeleteTask = (index) => { 
+    const handleDeleteTask = async (taskId) => { 
         if ((title) || (description)){
             Alert.alert(
                 "Cannot Delete", 
@@ -119,12 +128,19 @@ const TaskPage = ( {navigation} ) => {
                 });
         }
         else {
-            const updatedTitles = [...titles]; 
-            updatedTitles.splice(index, 1); 
-            const updatedDescriptions = [...descriptions]; 
-            updatedDescriptions.splice(index, 1); 
-            setTitles(updatedTitles);
-            setDescriptions(updatedDescriptions); 
+            // const updatedTitles = [...titles]; 
+            // updatedTitles.splice(index, 1); 
+            // const updatedDescriptions = [...descriptions]; 
+            // updatedDescriptions.splice(index, 1); 
+            // setTitles(updatedTitles);
+            // setDescriptions(updatedDescriptions); 
+            try {
+                await deleteDoc(doc(FIRESTORE_DB, `Tasks/${taskId}`));
+                await deleteDoc(doc(FIRESTORE_DB, `Users/${user.uid}/tasks/${taskId}`));
+            } catch (e) {
+                console.log('Cannot delete' + e);
+            }
+            // await deleteDoc(ref);
         }
         
     }; 
@@ -137,12 +153,12 @@ const TaskPage = ( {navigation} ) => {
             }, 1000);
     }
     
-    const handleDetail = (index) => { 
-        const taskToDisplay = titles[index]; 
-        const descriptionToDisplay = descriptions[index]; 
+    const handleDetail = (title, description) => { 
+        // const taskToDisplay = titles[index]; 
+        // const descriptionToDisplay = descriptions[index]; 
         Alert.alert(
-            taskToDisplay, 
-            descriptionToDisplay, 
+            title,
+            description, 
             [
                 {
                     text:"Back", 
@@ -155,36 +171,62 @@ const TaskPage = ( {navigation} ) => {
     }; 
 
   
-    const renderItem = ({ item, index }) => ( 
+    const renderItem = ({ item, index }) => {
+        console.log('item: ', item);
+        console.log('itemid ', item.id)
+        const toggleTrue = async (isChecked) => {
+            if (isChecked) {
+                await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}`), {
+                    completed_task_count: increment(1)
+                });
+            } else {
+                await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}`), {
+                    completed_task_count: increment(-1)
+                });
+            }
+            const ref = await doc(FIRESTORE_DB, `Tasks/${item.id}`);
+            await updateDoc(ref, {completed: !item.completed});
+            await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}/tasks/${item.id}`), {
+                completed: !item.completed
+            });
+        };
+
+        // const deleteItem = async () => {
+        //     await deleteDoc(ref);
+        // };
+
+        return ( 
         
-        <View style={styles.title} borderBottomWidth='thick'> 
-        <View style={styles.checkbox}>
-        <BouncyCheckbox 
-            onPress={(isChecked) => {}}
-        />
-        <Text style={styles.itemList}>{item}</Text> 
-        </View>
-            
-            <View 
-                style={styles.taskButtons}> 
-                <TouchableOpacity 
-                    onPress={() => handleDetail(index)}> 
-                    <Text 
-                        style={styles.detailButton}>Details</Text> 
-                </TouchableOpacity> 
-                <TouchableOpacity 
-                    onPress={() => handleEditTask(index)}> 
-                    <Text 
-                        style={styles.editButton}>Edit</Text> 
-                </TouchableOpacity> 
-                <TouchableOpacity 
-                    onPress={() => handleDeleteTask(index)}> 
-                    <Text 
-                        style={styles.deleteButton}>Delete</Text> 
-                </TouchableOpacity> 
+            <View style={styles.title} borderBottomWidth='thick'> 
+            <View style={styles.checkbox}>
+            <BouncyCheckbox 
+                isChecked={item.completed}
+                onPress={(isChecked) => {toggleTrue(isChecked)}}
+            />
+            <Text style={styles.itemList}>{item.title}</Text> 
+            </View>
+                
+                <View 
+                    style={styles.taskButtons}> 
+                    <TouchableOpacity 
+                        onPress={() => handleDetail(item.title, item.description)}> 
+                        <Text 
+                            style={styles.detailButton}>Details</Text> 
+                    </TouchableOpacity> 
+                    <TouchableOpacity 
+                        onPress={() => handleEditTask(item.title, item.description)}> 
+                        <Text 
+                            style={styles.editButton}>Edit</Text> 
+                    </TouchableOpacity> 
+                    <TouchableOpacity 
+                        onPress={() => handleDeleteTask(item.id)}> 
+                        <Text 
+                            style={styles.deleteButton}>Delete</Text> 
+                    </TouchableOpacity> 
+                </View> 
             </View> 
-        </View> 
-    ); 
+        );
+    }  
   
     return ( 
         <View style={styles.container}> 
@@ -218,7 +260,7 @@ const TaskPage = ( {navigation} ) => {
                 </Text> 
             </TouchableOpacity> 
             <FlatList 
-                data={titles} 
+                data={tasks} 
                 renderItem={renderItem} 
                 keyExtractor={(item, index) => index.toString()} 
             /> 

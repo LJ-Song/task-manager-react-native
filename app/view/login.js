@@ -37,7 +37,6 @@ const Login = ({navigation}) => {
             const user = auth.currentUser;
             const data = {
                 completed_task_count: 0, 
-                tasks: null,
                 email: user.email
             }
             const register = await setDoc(doc(FIRESTORE_DB, "Users", user.uid), data)
