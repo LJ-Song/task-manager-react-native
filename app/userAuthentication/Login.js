@@ -1,11 +1,12 @@
-import {View, Text, TextInput, Button, ActivityIndicator, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, Alert, TextInput, Button, ActivityIndicator, TouchableOpacity, ScrollView} from 'react-native';
 import React, { useState } from 'react';
 import { FIREBASE_AUTH } from '../../config/firebase';
 import { signInWithEmailAndPassword,createUserWithEmailAndPassword } from 'firebase/auth'
 
 import styles from '../../styles/task.style';
 
-const Login = () => {
+
+const Login = ({navigation}) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -14,9 +15,12 @@ const Login = () => {
     const signIn = async () => {
         setLoading(true);
         try {
-            const response = await signInWithEmailAndPassword(auth, email, password);
+            const response = await signInWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                navigation.navigate('TaskPage');
+            });
             console.log(response);
-            alert('Successfully signed in! ');
+            Alert.alert('Success', 'Successfully signed in! ');
         } catch (error) {
             console.log(error);
             alert('Sign in failed: ' + error.message);
@@ -28,7 +32,10 @@ const Login = () => {
     const signUp = async() => {
         setLoading(true);
         try {
-            const response = await createUserWithEmailAndPassword(auth, email, password);
+            const response = await createUserWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                navigation.navigate('TaskPage');
+                });
             console.log(response);
             alert('Successfully registered! ');
         } catch (error) {

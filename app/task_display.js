@@ -13,7 +13,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import styles  from '../styles/task.style'
   
-const TaskPage = () => { 
+const TaskPage = ( {navigation} ) => { 
     const [title, setTitle] = useState(""); 
     const [titles, setTitles] = useState([]); 
     const [editIndex, setEditIndex] = useState(-1); 
@@ -22,6 +22,10 @@ const TaskPage = () => {
     const [descriptions, setDescriptions] = useState([]); 
 
     const router = useRouter();
+
+    const handleLeaderboard = () => {
+        navigation.navigate('Leaderboard');
+    }
   
     const handleAddTask = () => { 
         if ((title) && (description)) { 
@@ -153,7 +157,7 @@ const TaskPage = () => {
             <TouchableOpacity 
                 style={styles.addButton} 
                 // To be implemented
-                onPress={() => {}}> 
+                onPress={handleLeaderboard}> 
                 <Text style={styles.addButtonText}> 
                     Leaderboard
                 </Text> 
