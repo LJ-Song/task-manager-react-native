@@ -22,9 +22,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import React, {useState, useEffect} from 'react';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import Login from './userAuthentication/login';
-import TaskPage from '../app/task_display';
-import Leaderboard from "./leaderboard";
+import Login from './view/login';
+import TaskPage from './view/task_display';
+import Leaderboard from "./view/leaderboard";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,7 +44,12 @@ export default function App() {
     return (
         <NavigationContainer independent={true}>
             <Stack.Navigator initialRouterName='Login'>
-                <Stack.Screen name='Login' component={Login} options={{ headerShown: false}}/>
+                <Stack.Screen 
+                name='Login' 
+                component={Login} 
+                options={{ 
+                    headerShown: false,
+                    }}/>
                 <Stack.Screen name='TaskPage' component={TaskPage} options={{ headerShown: false}}/>
                 <Stack.Screen name='Leaderboard' component={Leaderboard} options={{ headerShown: false}}/>
             </Stack.Navigator>

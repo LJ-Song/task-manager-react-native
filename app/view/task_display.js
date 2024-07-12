@@ -10,8 +10,10 @@ import {
     Alert, 
 } from "react-native"; 
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { doc, setDoc } from "firebase/firestore"; 
+import { FIRESTORE_DB, FIREBASE_AUTH } from "../../config/firebase";
 
-import styles  from '../styles/task.style'
+import styles  from '../../styles/task.style'
   
 const TaskPage = ( {navigation} ) => { 
     const [title, setTitle] = useState(""); 
@@ -20,6 +22,8 @@ const TaskPage = ( {navigation} ) => {
 
     const [description, setDescription] = useState(""); 
     const [descriptions, setDescriptions] = useState([]); 
+
+    const user = FIREBASE_AUTH.currentUser;
 
     const router = useRouter();
 
@@ -40,6 +44,16 @@ const TaskPage = ( {navigation} ) => {
                 setEditIndex(-1); 
             } else { 
                 // Add new title 
+                try {
+                    if (user != null) {
+                        const uid = user.uid;
+                        const email = user.email;
+
+                    }
+                } catch (e) {
+
+                }
+
                 setTitles([...titles, title]); 
                 setDescriptions([...descriptions, description]); 
             } 
@@ -81,6 +95,14 @@ const TaskPage = ( {navigation} ) => {
         }
         
     }; 
+
+    const handleCheckedTask = (index) => { 
+        // TODO: Need to update to completed task. 
+        // If someone changes their mind, they can't reverse it. 
+        const timeoutId = setTimeout(() => {
+                handleDeleteTask(index);
+            }, 1000);
+    }
     
     const handleDetail = (index) => { 
         const taskToDisplay = titles[index]; 
@@ -105,7 +127,7 @@ const TaskPage = ( {navigation} ) => {
         <View style={styles.title} borderBottomWidth='thick'> 
         <View style={styles.checkbox}>
         <BouncyCheckbox 
-            onPress={(isChecked) => {console.log(isChecked)}}
+            onPress={(isChecked) => {}}
         />
         </View>
             <Text 

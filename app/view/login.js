@@ -1,6 +1,7 @@
 import {View, Text, Alert, TextInput, Button, ActivityIndicator, TouchableOpacity, ScrollView} from 'react-native';
 import React, { useState } from 'react';
-import { FIREBASE_AUTH } from '../../config/firebase';
+import { FIREBASE_AUTH, FIRESTORE_DB } from '../../config/firebase';
+import { doc, setDoc } from "firebase/firestore"; 
 import { signInWithEmailAndPassword,createUserWithEmailAndPassword } from 'firebase/auth'
 
 import styles from '../../styles/task.style';
@@ -32,7 +33,13 @@ const Login = ({navigation}) => {
     const signUp = async() => {
         setLoading(true);
         try {
-            const response = await createUserWithEmailAndPassword(auth, email, password)
+            const response = await createUserWithEmailAndPassword(auth, email, password); 
+            const user = auth.currentUser;
+            const data = {
+                completed_task_count: 0, 
+                tasks: [],
+            }
+            const register = await setDoc(doc(FIRESTORE_DB, "Users", user.uid), data)
             .then(() => {
                 navigation.navigate('TaskPage');
                 });
