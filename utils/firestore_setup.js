@@ -1,6 +1,6 @@
 // Set up the documents for firebase
 import { doc, setDoc, collection, addDoc, updateDoc, arrayUnion } from "firebase/firestore"; 
-import { FIREBASE_APP, FIRESTORE_DB } from "../config/firebase";
+import { FIREBASE_APP, FIRESTORE_DB, FIREBASE_AUTH } from "../config/firebase";
 
 // Handles adding task to DB
 export const addTaskToDB = async ({title, description, uid}) => {
@@ -37,10 +37,14 @@ export const readTasksFromDB = async () => {
 }
 
 
-export const updateTaskFromDB = async ({title, description, ref}) => {
+export const updateTaskFromDB = async (title, description, id) => {
+    console.log('title: ', title);
+    console.log('description', description);
+    console.log('id' ,id);
+    const user = FIREBASE_AUTH.currentUser;
     try {
-        const userTaskUpdateRef = doc(FIRESTORE_DB, 'Users', ref.uid, 'tasks', ref.id);
-        const taskUpdateRef = doc(FIRESTORE_DB, "Tasks", ref.id);
+        const userTaskUpdateRef = doc(FIRESTORE_DB, 'Users', user.uid, 'tasks', id);
+        const taskUpdateRef = doc(FIRESTORE_DB, "Tasks", id);
         // Update the user node
         await updateDoc(userTaskUpdateRef, {
             "title": title, 

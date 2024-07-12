@@ -7,6 +7,7 @@ import {
     TouchableOpacity, 
     FlatList, 
     StyleSheet, 
+    ActivityIndicator,
     Alert, 
 } from "react-native"; 
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -27,6 +28,8 @@ const TaskPage = ( {navigation} ) => {
     const [title, setTitle] = useState(""); 
     // const [titles, setTitles] = useState([]); 
     const [editIndex, setEditIndex] = useState(-1); 
+    const [loading, setLoading] = useState(false);
+    const [completedCount, setCompletedCount] = useState(0);
 
     const [description, setDescription] = useState(""); 
     // const [descriptions, setDescriptions] = useState([]); 
@@ -35,6 +38,7 @@ const TaskPage = ( {navigation} ) => {
     // Real time update to fectch data
     useEffect(() => {
         if (user != null) {
+            setLoading(true);
             const tasksRef = collection(doc(FIRESTORE_DB, 'Users', user.uid), "tasks");
     
             const subscriber = onSnapshot(tasksRef, {
@@ -46,10 +50,26 @@ const TaskPage = ( {navigation} ) => {
                         ...doc.data()
                     });
                 });
-    
                 setTasks(tasks);
+                setLoading(false);
             }
         });
+        // // Unsubscribe from events when no longer in use
+        return () => subscriber();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (user != null) {
+            setLoading(true);
+            const userRef = doc(FIRESTORE_DB, 'Users', user.uid);
+    
+            const subscriber = onSnapshot(userRef, (doc) => {
+            
+                console.log('Completed list of users', doc.data());
+            setCompletedCount(doc.data()["completed_task_count"]);
+            setLoading(false);
+            });
         // // Unsubscribe from events when no longer in use
         return () => subscriber();
         }
@@ -63,7 +83,7 @@ const TaskPage = ( {navigation} ) => {
         navigation.navigate('Leaderboard');
     }
     // Handles add task related operation. 
-    const handleAddTask = () => { 
+    const handleAddTask = async () => { 
         if (! (title)) {
             alert('Please fill in a title');
             return;
@@ -73,23 +93,32 @@ const TaskPage = ( {navigation} ) => {
             return;
         }
         if ((title) && (description)) { 
-            if (editIndex !== -1) { 
+            if (editIndex != -1) { 
                 // Edit existing title 
-                const updatedTitles = [...titles]; 
-                updatedTitles[editIndex] = title; 
-                setTitles(updatedTitles); 
-                const updatedDescriptions = [...descriptions]; 
-                updatedDescriptions[editIndex] = description; 
-                setDescriptions(updatedDescriptions); 
-                setEditIndex(-1); 
+                // const updatedTitles = [...titles]; 
+                // updatedTitles[editIndex] = title; 
+                // setTitles(updatedTitles); 
+                // const updatedDescriptions = [...descriptions]; 
+                // updatedDescriptions[editIndex] = description; 
+                // setDescriptions(updatedDescriptions); 
+                const updatedTasks = [...tasks];
+                const task = updatedTasks[editIndex]["id"];
+                console.log('Working with this task: ',task);
+                setLoading(true);
+                // console.log('WOrking id', task["id"]);
+                updateTaskFromDB(title, description, task);
+                setEditIndex(-1);
+                setLoading(false);
             } else { 
                 // Add new title 
                 try {
                     if (user != null) {
+                        setLoading(true);
                         const uid = user.uid;
                         addTaskToDB({title, description, uid});
                         setTitle(""); 
                         setDescription("")
+                        setLoading(false);
                     }
                 } catch (e) {
                     console.log(e);
@@ -102,14 +131,15 @@ const TaskPage = ( {navigation} ) => {
         } 
     }; 
   
-    const handleEditTask = (ref) => { 
-        setTitle(ref.title);
-        setDescription(ref.description);
+    const handleEditTask = (title, description, index) => { 
+        setTitle(title);
+        setDescription(description);
         // const taskToEdit = titles[index]; 
         // setTitle(taskToEdit); 
         // const descriptionToEdit = descriptions[index]; 
         // setDescription(descriptionToEdit); 
-        // setEditIndex(index); 
+        setEditIndex(index); 
+        console.log("Edit Index", editIndex);
     }; 
   
     const handleDeleteTask = async (taskId) => { 
@@ -214,7 +244,7 @@ const TaskPage = ( {navigation} ) => {
                             style={styles.detailButton}>Details</Text> 
                     </TouchableOpacity> 
                     <TouchableOpacity 
-                        onPress={() => handleEditTask(item.title, item.description)}> 
+                        onPress={() => handleEditTask(item.title, item.description, index)}> 
                         <Text 
                             style={styles.editButton}>Edit</Text> 
                     </TouchableOpacity> 
@@ -231,7 +261,7 @@ const TaskPage = ( {navigation} ) => {
     return ( 
         <View style={styles.container}> 
             <Text style={styles.heading}>Task Manager</Text> 
-            <Text style={styles.headTitle}>Completed: 0</Text> 
+            <Text style={styles.headTitle}>Completed: {completedCount}</Text> 
             <TextInput 
                 style={styles.input} 
                 placeholder="Title"
@@ -259,11 +289,12 @@ const TaskPage = ( {navigation} ) => {
                     Leaderboard
                 </Text> 
             </TouchableOpacity> 
+            { loading ? <ActivityIndicator size="large" color="#0000ff"/> :
             <FlatList 
                 data={tasks} 
                 renderItem={renderItem} 
-                keyExtractor={(item, index) => index.toString()} 
-            /> 
+                keyExtractor={(item) => item.id} 
+            /> }
         </View> 
     ); 
 }; 
