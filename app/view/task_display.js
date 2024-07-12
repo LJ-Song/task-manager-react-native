@@ -36,12 +36,16 @@ const TaskPage = ( {navigation} ) => {
                 completed: false,
                 time_completed: null
             });
-            const userRef = doc(FIRESTORE_DB, "Users", user.uid);
+            const userRef = doc(FIRESTORE_DB, "Users", uid, "tasks", taskRef.id);
             
             // Atomically add a new region to the "regions" array field.
-            await updateDoc(userRef, {
-                tasks: arrayUnion(taskRef.id)
-            });
+            const subtaskRef = await setDoc(userRef, {
+                title: title, 
+                description: description
+            })
+            // await updateDoc(userRef, {
+            //     tasks: arrayUnion(taskRef.id)
+            // });
             setTitle(""); 
             setDescription("")
             console.log('Document written with ID: ', taskRef.id);
