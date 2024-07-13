@@ -26,6 +26,7 @@ import { FIREBASE_AUTH } from "../config/firebase";
 import Login from './view/login';
 import TaskPage from './view/task_display';
 import Leaderboard from "./view/leaderboard";
+import Seed from "./seeds/seedPage";
 
 const Stack = createNativeStackNavigator();
 

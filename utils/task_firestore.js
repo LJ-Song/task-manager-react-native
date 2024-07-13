@@ -20,7 +20,7 @@ export const addTaskToDB = async ({title, description, uid}) => {
         });
         // Create sub collections in usernode to store their tasks
         const userRef = doc(FIRESTORE_DB, "Users", uid, "tasks", taskRef.id);
-        
+        const refId = taskRef.id;
         // Atomically add a new region to the "regions" array field.
         const subtaskRef = await setDoc(userRef, {
             title: title, 
@@ -31,6 +31,7 @@ export const addTaskToDB = async ({title, description, uid}) => {
     } catch (e) {
         console.error('Error adding document: ', e);
     }
+    return refId;
 }
 
 
