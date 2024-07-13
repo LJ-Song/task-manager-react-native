@@ -79,7 +79,7 @@ const userSeeding = (userData) => {
 
 const taskSeed = (taskData, userData) => {
   var index = 0;
-  var userIndex = 1;
+  var userIndex = 4;
   const interval = setInterval(async () => {
       const fakeTask = taskData[index];
       const fakeUser = userData[userIndex];
@@ -89,11 +89,14 @@ const taskSeed = (taskData, userData) => {
           completed,
           time_completed
       } = fakeTask;
-      const new_time_completed = null;
-      if (time_completed != null) {
-        new_time_completed = Timestamp.fromDate(time_completed);
-      }
+      console.log(fakeTask);
       
+      var new_time_completed = null;
+      if (time_completed !== null) {
+        new_time_completed = Timestamp.fromDate(new Date(time_completed));
+      }
+      console.log(fakeTask);
+      console.log(new_time_completed);
       const {
         email, 
         password
@@ -146,7 +149,7 @@ const taskSeed = (taskData, userData) => {
         .catch((error) => console.log(error));
         
       index += 1;
-      if (index === 5) {
+      if (index >= 20) {
         console.log('Added tasks: ', index);
         clearInterval(interval);
       }

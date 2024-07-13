@@ -48,6 +48,8 @@ export default function App() {
     return (
         <NavigationContainer independent={true}>
             <Stack.Navigator initialRouterName='Login'>
+            
+                
                 <Stack.Screen 
                 name='Login' 
                 component={Login} 
@@ -71,3 +73,7 @@ export default function App() {
 // {user ? (<Stack.screen name='Inside' component={InsideLayout} options={{ headerShown: false}}/>)
 //                     :
 //                     (<Stack.screen name='Login' component={Login} options={{ headerShown: false}}/>)};
+
+{/* <Stack.Screen
+                name='Seed'
+                component={Seed}/> */}

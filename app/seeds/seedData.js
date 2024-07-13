@@ -1,6 +1,7 @@
 import { FIRESTORE_DB, FIREBASE_AUTH } from "../../config/firebase";
 import { signOut } from "firebase/auth";
 
+// Populated data. Seeded user. 
 const userData = [
     {
       email: 'testmaristrange@gmail.com',
@@ -9,6 +10,18 @@ const userData = [
     {
       email: 'testgfran@gmail.com',
       password: 'seed_password_2',
+    },
+    {
+        email: 'testaccount0@gmail.com',
+        password: 'testaccount0'
+    },
+    {
+        email: 'testaccount1@gmail.com',
+        password: 'testaccount1'
+    },
+    {
+        email: 'testaccount2@gmail.com',
+        password: 'testaccount2'
     },
   ]
 
