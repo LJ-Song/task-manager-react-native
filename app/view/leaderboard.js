@@ -23,8 +23,7 @@ const data = {
 const Leaderboard = ({navigation}) => {
   const [filter, setFilter] = useState('daily');
 
-  LeaderboardQueries();
-
+  
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <Text style={styles.name}>{item.name}</Text>

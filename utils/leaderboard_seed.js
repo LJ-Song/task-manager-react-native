@@ -3,10 +3,8 @@ import { FIREBASE_APP, FIRESTORE_DB, FIREBASE_AUTH } from "../config/firebase";
 
 
 import React, { useEffect } from 'react';
-import firestore from '@react-native-firebase/firestore';
 
 const LeaderboardQueries = () => {
-    useEffect(() => {
     const getDocuments = async () => {
         const now = new Date();
 
@@ -41,10 +39,7 @@ const LeaderboardQueries = () => {
         console.log('One Month Old:', oneMonthOldQuery.docs.map(doc => doc.data()));
     };
 
-    getDocuments();
-  }, []);
-
-  return null;
+    // getDocuments();
 };
 
 export default LeaderboardQueries;
