@@ -1,13 +1,18 @@
 // Set up the documents for firebase
-import { doc, setDoc, collection, addDoc, updateDoc, arrayUnion } from "firebase/firestore"; 
+import { doc, setDoc, collection, addDoc, updateDoc } from "firebase/firestore"; 
 import { FIREBASE_APP, FIRESTORE_DB, FIREBASE_AUTH } from "../config/firebase";
+import React, { useState } from "react";
 
 // Handles adding task to DB
 export const addTaskToDB = async ({title, description, uid}) => {
     try {
+        const email = FIREBASE_AUTH.currentUser.email;
+        const username = email ? email.split("@")[0] : " ";
         // Add new task to the Firestore DB
         const taskRef = await addDoc(collection(FIRESTORE_DB, 'Tasks'), {
             uid: uid,
+            email: email,
+            username: username,
             title: title, 
             description: description, 
             completed: false,
@@ -26,14 +31,6 @@ export const addTaskToDB = async ({title, description, uid}) => {
     } catch (e) {
         console.error('Error adding document: ', e);
     }
-}
-
-export const readOneTaskFromDB = async () => {
-
-}
-
-export const readTasksFromDB = async () => {
-
 }
 
 
@@ -59,7 +56,4 @@ export const updateTaskFromDB = async (title, description, id) => {
     } catch (e) {
         console.log('Error updating', e);
     }
-}
-export const deleteTaskFromDB = async () => {
-    
 }

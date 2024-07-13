@@ -21,6 +21,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import React, {useState, useEffect} from 'react';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { FIREBASE_AUTH } from "../config/firebase";
 
 import Login from './view/login';
 import TaskPage from './view/task_display';
@@ -39,7 +40,9 @@ const Stack = createNativeStackNavigator();
 // }
 
 export default function App() {
-    const [user, setUser] = useState(null);
+
+
+    const user = FIREBASE_AUTH.currentUser;
 
     return (
         <NavigationContainer independent={true}>

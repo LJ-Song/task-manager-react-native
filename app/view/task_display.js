@@ -13,18 +13,18 @@ import {
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { doc, serverTimestamp, setDoc, collection, addDoc, deleteDoc, updateDoc, increment, onSnapshot } from "firebase/firestore"; 
 import { FIRESTORE_DB, FIREBASE_AUTH } from "../../config/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 import styles  from '../../styles/task.style'
 import { 
     addTaskToDB, 
-    readTasksFromDB, 
-    deleteTaskFromDB, 
-    readOneTaskFromDB, 
     updateTaskFromDB 
-} from '../../utils/firestore_setup'
-  
+} from '../../utils/task_firestore'
+
+
+
 const TaskPage = ( {navigation} ) => { 
-    const user = FIREBASE_AUTH.currentUser;
+    const currentUser = FIREBASE_AUTH.currentUser;
     const [title, setTitle] = useState(""); 
     // const [titles, setTitles] = useState([]); 
     const [editIndex, setEditIndex] = useState(-1); 
@@ -35,11 +35,27 @@ const TaskPage = ( {navigation} ) => {
     // const [descriptions, setDescriptions] = useState([]); 
 
     const [tasks, setTasks] = useState([]);
+
+    //   // Set an initializing state whilst Firebase connects
+    // const [initializing, setInitializing] = useState(true);
+    // const [user, setUser] = useState();
+
+    // // Handle user state changes
+    // function onAuthStateChanged(user) {
+    //     setUser(user);
+    //     if (initializing) setInitializing(false);
+    // }
+
+    // useEffect(() => {
+    //     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    //     return subscriber; // unsubscribe on unmount
+    // }, []);
+
     // Real time update to fectch data
     useEffect(() => {
-        if (user != null) {
+        if (currentUser != null) {
             setLoading(true);
-            const tasksRef = collection(doc(FIRESTORE_DB, 'Users', user.uid), "tasks");
+            const tasksRef = collection(doc(FIRESTORE_DB, 'Users', currentUser.uid), "tasks");
     
             const subscriber = onSnapshot(tasksRef, {
             next: (snapshot) => {
@@ -60,13 +76,13 @@ const TaskPage = ( {navigation} ) => {
     }, []);
 
     useEffect(() => {
-        if (user != null) {
+        if (currentUser != null) {
             setLoading(true);
-            const userRef = doc(FIRESTORE_DB, 'Users', user.uid);
+            const userRef = doc(FIRESTORE_DB, 'Users', currentUser.uid);
     
             const subscriber = onSnapshot(userRef, (doc) => {
             
-                console.log('Completed list of users', doc.data());
+                // console.log('Completed list of users', doc.data());
             setCompletedCount(doc.data()["completed_task_count"]);
             setLoading(false);
             });
@@ -82,6 +98,19 @@ const TaskPage = ( {navigation} ) => {
     const handleLeaderboard = () => {
         navigation.navigate('Leaderboard');
     }
+
+    const handleSignOut = async () => {
+        signOut(FIREBASE_AUTH).then(() => {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+            console.log('Sign out successful');
+            alert('Sign out successful');
+          }).catch((error) => {
+            console.log('Cannot sign out, ' + e);
+          });
+    }
     // Handles add task related operation. 
     const handleAddTask = async () => { 
         if (! (title)) {
@@ -94,16 +123,8 @@ const TaskPage = ( {navigation} ) => {
         }
         if ((title) && (description)) { 
             if (editIndex != -1) { 
-                // Edit existing title 
-                // const updatedTitles = [...titles]; 
-                // updatedTitles[editIndex] = title; 
-                // setTitles(updatedTitles); 
-                // const updatedDescriptions = [...descriptions]; 
-                // updatedDescriptions[editIndex] = description; 
-                // setDescriptions(updatedDescriptions); 
                 const updatedTasks = [...tasks];
                 const task = updatedTasks[editIndex]["id"];
-                console.log('Working with this task: ',task);
                 setLoading(true);
                 // console.log('WOrking id', task["id"]);
                 updateTaskFromDB(title, description, task);
@@ -112,9 +133,9 @@ const TaskPage = ( {navigation} ) => {
             } else { 
                 // Add new title 
                 try {
-                    if (user != null) {
+                    if (currentUser != null) {
                         setLoading(true);
-                        const uid = user.uid;
+                        const uid = currentUser.uid;
                         addTaskToDB({title, description, uid});
                         setTitle(""); 
                         setDescription("")
@@ -142,7 +163,7 @@ const TaskPage = ( {navigation} ) => {
         console.log("Edit Index", editIndex);
     }; 
   
-    const handleDeleteTask = async (taskId) => { 
+    const handleDeleteTask = async (taskId, completed) => { 
         if ((title) || (description)){
             Alert.alert(
                 "Cannot Delete", 
@@ -159,8 +180,10 @@ const TaskPage = ( {navigation} ) => {
         }
         else {
             try {
-                await deleteDoc(doc(FIRESTORE_DB, `Tasks/${taskId}`));
-                await deleteDoc(doc(FIRESTORE_DB, `Users/${user.uid}/tasks/${taskId}`));
+                if (!completed) {
+                    await deleteDoc(doc(FIRESTORE_DB, `Tasks/${taskId}`));
+                }
+                await deleteDoc(doc(FIRESTORE_DB, `Users/${currentUser.uid}/tasks/${taskId}`));
             } catch (e) {
                 console.log('Cannot delete' + e);
             }
@@ -187,39 +210,35 @@ const TaskPage = ( {navigation} ) => {
 
   
     const renderItem = ({ item, index }) => {
-        console.log('item: ', item);
-        console.log('itemid ', item.id)
+        // console.log('item: ', item);
+        // console.log('itemid ', item.id)
         const toggleTrue = async (isChecked) => {
             if (isChecked) {
-                await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}`), {
+                await updateDoc(doc(FIRESTORE_DB, `Users/${currentUser.uid}`), {
                     completed_task_count: increment(1)
                 });
                 await updateDoc(doc(FIRESTORE_DB, `Tasks/${item.id}`), {
                     completed: !item.completed, 
                     time_completed: serverTimestamp()
                 });
-                await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}/tasks/${item.id}`), {
+                await updateDoc(doc(FIRESTORE_DB, `Users/${currentUser.uid}/tasks/${item.id}`), {
                     completed: !item.completed
                 });
 
             } else {
-                await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}`), {
+                await updateDoc(doc(FIRESTORE_DB, `Users/${currentUser.uid}`), {
                     completed_task_count: increment(-1)
                 });
                 await updateDoc(doc(FIRESTORE_DB, `Tasks/${item.id}`), {
                     completed: !item.completed, 
                     time_completed: null
                 });
-                await updateDoc(doc(FIRESTORE_DB, `Users/${user.uid}/tasks/${item.id}`), {
+                await updateDoc(doc(FIRESTORE_DB, `Users/${currentUser.uid}/tasks/${item.id}`), {
                     completed: !item.completed
                 });
             }
             
         };
-
-        // const deleteItem = async () => {
-        //     await deleteDoc(ref);
-        // };
 
         return ( 
         
@@ -245,7 +264,7 @@ const TaskPage = ( {navigation} ) => {
                             style={styles.editButton}>Edit</Text> 
                     </TouchableOpacity> 
                     <TouchableOpacity 
-                        onPress={() => handleDeleteTask(item.id)}> 
+                        onPress={() => handleDeleteTask(item.id, item.completed)}> 
                         <Text 
                             style={styles.deleteButton}>Delete</Text> 
                     </TouchableOpacity> 
@@ -256,7 +275,12 @@ const TaskPage = ( {navigation} ) => {
   
     return ( 
         <View style={styles.container}> 
+            <TouchableOpacity style={styles.taskButtons} onPress={handleSignOut}>
+                <Text>Sign out</Text>
+            </TouchableOpacity>
+            
             <Text style={styles.heading}>Task Manager</Text> 
+            
             <Text style={styles.headTitle}>Completed: {completedCount}</Text> 
             <TextInput 
                 style={styles.input} 

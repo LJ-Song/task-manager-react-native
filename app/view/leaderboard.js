@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import LeaderboardQueries from '../../utils/leaderboard_seed';
 
 const data = {
   daily: [
@@ -21,6 +22,8 @@ const data = {
 
 const Leaderboard = ({navigation}) => {
   const [filter, setFilter] = useState('daily');
+
+  LeaderboardQueries();
 
   const renderItem = ({ item }) => (
     <View style={styles.item}>
@@ -49,11 +52,16 @@ const Leaderboard = ({navigation}) => {
         <Button title="Weekly" onPress={() => setFilter('weekly')} />
         <Button title="Monthly" onPress={() => setFilter('monthly')} />
       </View>
+      <View style={styles.item}>
+      <Text style={styles.score}>Username</Text>
+      <Text style={styles.score}>Completed</Text>
+      </View>
       <FlatList
-        data={data[filter]}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-      />
+          data={data[filter]}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+        />
+      
     </View>
   );
 };
