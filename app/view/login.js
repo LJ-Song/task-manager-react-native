@@ -1,8 +1,8 @@
 import {View, Text, Alert, TextInput, Button, ActivityIndicator, TouchableOpacity, ScrollView} from 'react-native';
 import React, { useState } from 'react';
-import { FIREBASE_AUTH, FIRESTORE_DB } from '../../config/firebase';
+import { FIREBASE_AUTH} from '../../config/firebase';
 import { doc, setDoc } from "firebase/firestore"; 
-import { signInWithEmailAndPassword,createUserWithEmailAndPassword } from 'firebase/auth'
+import { signInWithEmailAndPassword} from 'firebase/auth'
 
 import styles from '../../styles/task.style';
 
@@ -30,31 +30,13 @@ const Login = ({navigation}) => {
         }
     }
 
-    const signUp = async() => {
-        setLoading(true);
-        try {
-            const response = await createUserWithEmailAndPassword(auth, email, password); 
-            const user = auth.currentUser;
-            const data = {
-                completed_task_count: 0, 
-                email: user.email
-            }
-            const register = await setDoc(doc(FIRESTORE_DB, "Users", user.uid), data)
-            .then(() => {
-                navigation.navigate('TaskPage');
-                });
-            console.log(response);
-            alert('Successfully registered! ');
-        } catch (error) {
-            console.log(error);
-            alert('Sign up failed: ' + error.message);
-        } finally {
-            setLoading(false);
-        }
+    const signUp = () => {
+        navigation.navigate('Signup');
     }
 
     return (
         <View style={styles.loginContainer}>
+            <Text style={styles.heading}>Task Manager</Text>
             <TextInput value= {email} style={styles.loginInput} placeholder="Email" autoCapitalize="none"
             onChangeText={(text) => setEmail(text)}></TextInput>
             <TextInput secureTextEntry={true} value= {password} style={styles.loginInput} placeholder="Password" autoCapitalize="none"
@@ -64,7 +46,7 @@ const Login = ({navigation}) => {
         <View style={{flex: 1}}> 
             <Button title='Log In' onPress={signIn}></Button> 
 
-            <Button title='Create account' onPress={signUp}></Button> 
+            <Button title='New user? create account' onPress={signUp}></Button> 
         </View>
         }
         </View>

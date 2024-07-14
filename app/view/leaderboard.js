@@ -84,15 +84,8 @@ const Leaderboard = ({navigation}) => {
         console.log(doc.data().uid);
         console.log(currentMonthly);
       });
-      // const updateMonthly = { ...tasks};
-      // updateMonthly["monthly"] = currentMonthly;
 
-      // setTasks( tasks => ({
-      //   ...updateMonthly
-      // }))
-          //     currentDaily.sort((a, b) => b.count - a.count);
-    //     currentWeekly.sort((a, b) => b.count - a.count);
-        currentMonthly.sort((a, b) => b.count - a.count);
+      currentMonthly.sort((a, b) => b.count - a.count);
       const updatedValue = {
         monthly: currentMonthly
       }

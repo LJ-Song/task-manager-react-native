@@ -2,7 +2,7 @@ import {View, Text, Alert, TextInput, Button, ActivityIndicator, TouchableOpacit
 import React, { useState } from 'react';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../../config/firebase';
 import { doc, setDoc } from "firebase/firestore"; 
-import { signInWithEmailAndPassword,createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 
 import styles from '../../styles/task.style';
 
@@ -42,6 +42,7 @@ const Signup = ({navigation}) => {
 
     return (
         <View style={styles.loginContainer}>
+            <Text style={styles.heading}>Task Manager</Text>
             <TextInput value= {email} style={styles.loginInput} placeholder="Email" autoCapitalize="none"
             onChangeText={(text) => setEmail(text)}></TextInput>
             <TextInput secureTextEntry={true} value= {password} style={styles.loginInput} placeholder="Password" autoCapitalize="none"

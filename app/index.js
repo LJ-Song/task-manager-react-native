@@ -27,6 +27,7 @@ import Login from './view/login';
 import TaskPage from './view/task_display';
 import Leaderboard from "./view/leaderboard";
 import Seed from "./seeds/seedPage";
+import Signup from "./view/signup";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,7 +43,6 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
 
-
     const user = FIREBASE_AUTH.currentUser;
 
     return (
@@ -53,6 +53,12 @@ export default function App() {
                 <Stack.Screen 
                 name='Login' 
                 component={Login} 
+                options={{ 
+                    headerShown: false,
+                    }}/>
+                <Stack.Screen 
+                name='Signup' 
+                component={Signup} 
                 options={{ 
                     headerShown: false,
                     }}/>

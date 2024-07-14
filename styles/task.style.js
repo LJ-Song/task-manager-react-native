@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
     container: { 
         flex: 1, 
         padding: 25, 
-        marginTop: 25, 
+        marginTop: 45, 
     }, 
     headTitle: { 
         fontSize: 20, 
@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     loginContainer: {
+        marginTop: 90,
         marginHorizontal: 20, 
         flex: 1, 
         justifyContent: 'center'
