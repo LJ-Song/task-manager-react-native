@@ -90,6 +90,9 @@ const Leaderboard = ({navigation}) => {
       // setTasks( tasks => ({
       //   ...updateMonthly
       // }))
+          //     currentDaily.sort((a, b) => b.count - a.count);
+    //     currentWeekly.sort((a, b) => b.count - a.count);
+        currentMonthly.sort((a, b) => b.count - a.count);
       const updatedValue = {
         monthly: currentMonthly
       }
@@ -154,6 +157,9 @@ const Leaderboard = ({navigation}) => {
             // setTasks( tasks => ({
             // ...updateWeekly
             // }));
+                //     currentDaily.sort((a, b) => b.count - a.count);
+            currentWeekly.sort((a, b) => b.count - a.count);
+    //     currentMonthly.sort((a, b) => b.count - a.count);
             const updatedValue = {
               weekly: currentWeekly
             }
@@ -213,6 +219,9 @@ const Leaderboard = ({navigation}) => {
         console.log(doc.data().uid);
         console.log(currentDaily);
       });
+        currentDaily.sort((a, b) => b.count - a.count);
+    //     currentWeekly.sort((a, b) => b.count - a.count);
+    //     currentMonthly.sort((a, b) => b.count - a.count);
       // const updateDaily = { ...tasks};
       // updateDaily["daily"] = currentDaily;
 
