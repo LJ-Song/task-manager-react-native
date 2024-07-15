@@ -28,15 +28,12 @@ This project is a mobile app (compatible with iOS and Android) to manage tasks. 
 
 Welcome to the **Task Manager** repository. This project is a mobile app (compatible with iOS and Android) to manage tasks with a built in leaderboard for users' completed task count. Below you will find information on how to get started, contribute, and more.
 
-<!-- ## Table of Contents
+## Table of Contents
 
-1. [Overview](https://www.notion.so/Impulse-OA-Task-Manager-Design-2523ed8fc7d74e55a3ae9c67acfe66d3?pvs=21)
-2. [Features](https://www.notion.so/Impulse-OA-Task-Manager-Design-2523ed8fc7d74e55a3ae9c67acfe66d3?pvs=21)
-3. [Installation](https://www.notion.so/Impulse-OA-Task-Manager-Design-2523ed8fc7d74e55a3ae9c67acfe66d3?pvs=21)
-4. [Usage](https://www.notion.so/Impulse-OA-Task-Manager-Design-2523ed8fc7d74e55a3ae9c67acfe66d3?pvs=21)
-5. [Contributing](https://www.notion.so/Impulse-OA-Task-Manager-Design-2523ed8fc7d74e55a3ae9c67acfe66d3?pvs=21)
-6. [License](https://www.notion.so/Impulse-OA-Task-Manager-Design-2523ed8fc7d74e55a3ae9c67acfe66d3?pvs=21)
-7. [Contact](https://www.notion.so/Impulse-OA-Task-Manager-Design-2523ed8fc7d74e55a3ae9c67acfe66d3?pvs=21) -->
+1. [Overview](#Overview)
+2. [Features](#Features)
+3. [Installation](#Installation)
+4. [Usage](#Usage)
 
 ## Overview
 
