@@ -1,29 +1,3 @@
-<!-- # Task Manager
-
-## Overview
-
-### Description
-
-This project is a mobile app (compatible with iOS and Android) to manage tasks. It aims to help users manage their daily tasks and allow for a leaderboard feature that ranks the highest number of completed tasks of any users filtered by daily, weekly, and monthly. The application is built using React Native and npm for the frontend, node.js for the backend, with a Firebase Firestore for data storage and FIrebase Authentication for user authentications.
-
-### Technologies
-
-- Frontend: [React Native, npm]
-- Backend: [Node.js]
-- Database: [Firebase Firestore]
-
-## Architecture
-
-### System Architecture
-
-### Components
-
-1. **Frontend**
-    - **Login**: Log in page. 
-    - **Signup**: Sign up page if a user is never registered. 
-    - **TaskPage**: Shows a user's completed and in progress tasks and monitors the number of completed tasks overall
-    - **Leaderboard**: Ranks all users completed tasks count filtered by daily, monthly, and weekly.  -->
-
 # Task Manager
 
 Welcome to the **Task Manager** repository. This project is a mobile app (compatible with iOS and Android) to manage tasks with a built in leaderboard for users' completed task count. Below you will find information on how to get started. 
@@ -93,6 +67,8 @@ npm start
 ## Usage
 
 Once the application is installed and running, you can scan the QR code if you are using Expo Go app, or follow the steps on terminal for your respective choice of device. 
+
+Initially the daily leaderboard might be empty because no one has completed any tasks in the past 24 hours. You can create an account and add some completed tasks to get on the daily leaderboard! 
 
 You can also open http://localhost:8081 in your browser to view the project. UI elements can appear differently than on your phone. 
 

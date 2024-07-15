@@ -23,8 +23,20 @@ const Login = ({navigation}) => {
             console.log(response);
             Alert.alert('Success', 'Successfully signed in! ');
         } catch (error) {
-            console.log(error);
-            alert('Sign in failed: ' + error.message);
+            if (error.code == '(auth/invalid-credential)') {
+                alert('Sign in failed. Invalid email or password');
+            }
+            else if (password.length < 7) {
+                alert('Sign up failed. Password must be longer than 7 characters');    
+            }
+            else if (error.code == 'auth/invalid-email') {
+                alert('Sign up failed. Invalid email')
+            }
+            else {
+                console.log(error);
+                alert('Sign in failed: ' + error.message);
+            }
+            
         } finally {
             setLoading(false);
         }

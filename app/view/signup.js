@@ -33,8 +33,17 @@ const Signup = ({navigation}) => {
             console.log(response);
             alert('Successfully registered! ');
         } catch (error) {
-            console.log(error);
-            alert('Sign up failed: ' + error.message);
+            if (password.length < 7) {
+                alert('Sign up failed. Password must be longer than 7 characters');    
+            }
+            else if (error.code == 'auth/invalid-email') {
+                alert('Sign up failed. Invalid email')
+            }
+            else {
+                console.log(error);
+                alert('Sign up failed: ' + error.message);
+            }
+            
         } finally {
             setLoading(false);
         }
