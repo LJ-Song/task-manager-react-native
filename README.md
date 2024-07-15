@@ -26,7 +26,7 @@ This project is a mobile app (compatible with iOS and Android) to manage tasks. 
 
 # Task Manager
 
-Welcome to the **Task Manager** repository. This project is a mobile app (compatible with iOS and Android) to manage tasks with a built in leaderboard for users' completed task count. Below you will find information on how to get started, contribute, and more.
+Welcome to the **Task Manager** repository. This project is a mobile app (compatible with iOS and Android) to manage tasks with a built in leaderboard for users' completed task count. Below you will find information on how to get started. 
 
 ## Table of Contents
 
@@ -44,7 +44,6 @@ Welcome to the **Task Manager** repository. This project is a mobile app (compat
 - Node.js
 - React Native
 - Expo
-- Stylesheet
 
 
 ## Features
