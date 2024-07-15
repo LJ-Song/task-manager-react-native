@@ -1,10 +1,11 @@
 class User {
     constructor (completed_task_count, tasks) {
+        this.email = email,
         this.completed_task_count = completed_task_count;
-        this.tasks = tasks
+        this.tasks = tasks // A collection. 
     }
     toString() {
-        return '';
+        return `Email: ${email}, Completed tasks: ${this.completed_task_count}`;
     }
 }
 
@@ -12,6 +13,7 @@ class User {
 const userConverter = {
     toFireStore: (user) => {
         return {
+            email: email,
             completed_task_count: user.completed_task_count,
             tasks: user.tasks
             };
