@@ -31,7 +31,7 @@ export const addTaskToDB = async ({title, description, uid}) => {
     } catch (e) {
         console.error('Error adding document: ', e);
     }
-    return refId;
+    // return refId;
 }
 
 

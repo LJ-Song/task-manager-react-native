@@ -213,7 +213,7 @@ const Leaderboard = ({navigation}) => {
       <FlatList
           data={tasks[filter]}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) =>  {return item.uid}}
         /> 
       }
       
