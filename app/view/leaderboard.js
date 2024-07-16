@@ -198,7 +198,7 @@ const Leaderboard = ({navigation}) => {
             Back to Task
         </Text> 
       </TouchableOpacity> 
-      <Text style={styles.title}>Winners</Text>
+      <Text style={styles.title}>Leaderboard</Text>
       <View style={styles.buttonContainer}>
         <Button title="Daily" onPress={() => setFilter('daily')} />
         <Button title="Weekly" onPress={() => setFilter('weekly')} />
