@@ -74,6 +74,10 @@ You can also open http://localhost:8081 in your browser to view the project. UI 
 
 For detailed usage on expo go, refer to the [Expo Go app](https://expo.dev/go).
 
+## Demo
+<img width="469" alt="Task_manager_demo" src="https://github.com/user-attachments/assets/7a86bc56-9b1c-405a-baee-54d640bed255">
+
+
 <!-- ## Contact
 
 If you have any questions or suggestions, feel free to reach out:
